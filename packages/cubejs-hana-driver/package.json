@@ -1,11 +1,11 @@
 {
-  "name": "@cubejs-backend/hana-driver",
+  "name": "cubejs-hana-driver",
   "description": "Cube.js SAP HANA database driver",
   "author": "Cube Dev, Inc.",
   "version": "0.31.14",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cube-js/cube.js.git",
+    "url": "https://github.com/zhjuncai/cube.js.git",
     "directory": "packages/cubejs-hana-driver"
   },
   "engines": {
@@ -29,8 +29,9 @@
   "dependencies": {
     "@cubejs-backend/base-driver": "^0.31.13",
     "@cubejs-backend/shared": "^0.31.13",
-    "generic-pool": "^3.6.0",
-    "@sap/hana-client": "^2.14.22"
+    "@sap/hana-client": "^2.14.22",
+    "cubejs-hana-driver": "^0.31.14",
+    "generic-pool": "^3.6.0"
   },
   "devDependencies": {
     "@cubejs-backend/linter": "^0.31.0",

@@ -7,7 +7,7 @@ import CubeCore, {
   DriverContext,
   DriverOptions,
   SystemOptions
-} from '@cubejs-backend/server-core';
+} from 'server-core-cubejs';
 import { getEnv, withTimeout } from '@cubejs-backend/shared';
 import express from 'express';
 import http from 'http';

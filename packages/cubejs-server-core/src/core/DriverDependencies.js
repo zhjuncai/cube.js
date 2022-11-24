@@ -27,5 +27,5 @@ module.exports = {
   materialize: '@cubejs-backend/materialize-driver',
   // List for JDBC drivers
   'databricks-jdbc': '@cubejs-backend/databricks-jdbc-driver',
-  hana: '@cubejs-backend/hana-driver',
+  hana: 'cubejs-hana-driver',
 };
