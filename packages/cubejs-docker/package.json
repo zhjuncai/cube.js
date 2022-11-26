@@ -30,7 +30,7 @@
     "@cubejs-backend/prestodb-driver": "^0.31.13",
     "@cubejs-backend/questdb-driver": "^0.31.14",
     "@cubejs-backend/redshift-driver": "^0.31.14",
-    "cubejs-server": "^0.32.2",
+    "cubejs-server": "^0.32.3",
     "@cubejs-backend/snowflake-driver": "^0.31.13",
     "@cubejs-backend/sqlite-driver": "^0.31.13",
     "@cubejs-backend/trino-driver": "^0.31.13",
