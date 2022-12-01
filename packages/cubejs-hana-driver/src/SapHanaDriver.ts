@@ -16,6 +16,10 @@ import {
   DriverInterface,
   DownloadQueryResultsOptions,
   StreamOptions,
+  DownloadTableData,
+  DownloadTableMemoryData,
+  TableStructure,
+  IndexesSQL,
 } from '@cubejs-backend/base-driver';
 import { ConnectionOptions, Connection, FieldInfo } from 'types-hana-client';
 
@@ -203,12 +207,14 @@ export class SapHanaDriver extends BaseDriver implements DriverInterface {
     // eslint-disable-next-line no-underscore-dangle
     const conn: SapHanaConnection = await (<any> this.pool)._factory.create();
 
+    this.logger("The stream query is ", {query});
+
     try {
       const resultSet = await this.queryResultSet(query, values);
       const columnInfo = resultSet.getColumnInfo();
 
       const rowStream = Stream.createObjectStream(resultSet);
-      return {
+      const result = {
         rowStream,
         types: this.mapFieldsToGenericTypes(columnInfo),
         release: async () => {
@@ -216,6 +222,11 @@ export class SapHanaDriver extends BaseDriver implements DriverInterface {
           await (<any> this.pool)._factory.destroy(conn);
         }
       };
+
+      this.logger("The stream result ", { result });
+
+      return result;
+
     } catch (e) {
       // eslint-disable-next-line no-underscore-dangle
       await (<any> this.pool)._factory.destroy(conn);
@@ -228,16 +239,26 @@ export class SapHanaDriver extends BaseDriver implements DriverInterface {
     values: unknown[],
     options: DownloadQueryResultsOptions
   ) {
-    if (options.streamImport) {
-      // throw new Error('No support on the HANA stream yet');
-      return this.stream(query, values, options);
-    }
+    console.log("downloadQueryResults query is " + query);
+
+    this.logger('downloadQueryResults', {
+      query,
+      ...options
+    });
+
+    this.logger("The streamImport is ", {options})
+
+    // if (options.streamImport) {
+    //   return this.stream(query, values, options);
+    // }
 
     const resultSet = await this.queryResultSet(query, values);
     const rows = [];
     while (resultSet.next()) {
       rows.push(resultSet.getValues());
     }
+
+    console.log("downloadQueryResults: " + JSON.stringify(rows));
 
     return {
       rows,
@@ -264,6 +285,51 @@ export class SapHanaDriver extends BaseDriver implements DriverInterface {
         type: this.toGenericType(hanaType)
       });
     });
+  }
+
+
+  protected isDownloadTableDataRow(tableData: DownloadTableData): tableData is DownloadTableMemoryData {
+    return (<DownloadTableMemoryData> tableData).rows !== undefined;
+  }
+
+  public async uploadTableWithIndexes(
+    table: string,
+    columns: TableStructure,
+    tableData: DownloadTableData,
+    indexesSql: IndexesSQL
+  ) {
+    this.logger('uploadTableWithIndexes', {
+      table, columns, tableData, indexesSql
+    });
+
+    if (!this.isDownloadTableDataRow(tableData)) {
+      throw new Error(`${this.constructor} driver supports only rows upload`);
+    }
+
+    await this.createTable(table, columns);
+
+    const createTableSql = this.createTableSql(table, columns);
+
+    this.logger('HANA createTableSql', { createTableSql });
+    try {
+      for (let i = 0; i < tableData.rows.length; i++) {
+        await this.query(
+          `INSERT INTO ${table}
+        (${columns.map(c => this.quoteIdentifier(c.name)).join(', ')})
+        VALUES (${columns.map((c, paramIndex) => this.param(paramIndex)).join(', ')})`,
+          columns.map(c => this.toColumnValue(tableData.rows[i][c.name] as string, c.type))
+        );
+      }
+      for (let i = 0; i < indexesSql.length; i++) {
+        const [query, params] = indexesSql[i].sql;
+        await this.query(query, params);
+      }
+
+      this.logger('HANA uploadTableWithIndexes completed');
+    } catch (e) {
+      await this.dropTable(table);
+      throw e;
+    }
   }
 
   public toGenericType(columnType: string) {
