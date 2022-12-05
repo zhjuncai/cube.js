@@ -2,7 +2,7 @@
   "name": "cubejs-server",
   "description": "Cube.js all-in-one server",
   "author": "Cube Dev, Inc.",
-  "version": "0.33.3",
+  "version": "0.33.7",
   "types": "index.d.ts",
   "repository": {
     "type": "git",
@@ -55,7 +55,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.4.0",
     "semver": "^7.3.2",
-    "server-core-cubejs": "^0.33.3",
+    "server-core-cubejs": "^0.33.7",
     "source-map-support": "^0.5.19",
     "ws": "^7.1.2"
   },
