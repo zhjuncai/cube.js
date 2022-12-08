@@ -7,5 +7,19 @@ module.exports = {
             uid: 'SCHEMA_MANAGER',
             pwd: 'SchemaManager@2022',
         }
+    },
+    queryRewrite: (query, { securityContext }) => {
+        const user = securityContext;
+        if (!user.an_org_id) {
+          throw new Error('No an_org_id found in Security Context!');
+        }
+       
+        query.filters.push({
+            member: 'PurchaseOrders.supplierOrg',
+            operator: 'equals',
+            values: [user.an_org_id],
+        });
+        
+        return query;
     }
 };
