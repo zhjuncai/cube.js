@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { CommanderStatic } from 'commander';
 import { isDockerImage, requireFromPackage, packageExists } from '@cubejs-backend/shared';
-import type { ServerContainer as ServerContainerType } from '@cubejs-backend/server';
+import type { ServerContainer as ServerContainerType } from 'cubejs-server';
 
 import { displayError, event } from '../utils';
 

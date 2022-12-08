@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import R from 'ramda';
-import { createQuery, compile, queryClass, PreAggregations, QueryFactory } from '@cubejs-backend/schema-compiler';
+import { createQuery, compile, queryClass, PreAggregations, QueryFactory } from 'cubejs-schema-compiler';
 
 export class CompilerApi {
   /**

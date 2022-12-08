@@ -10,7 +10,7 @@ import {
   CanSwitchSQLUserFn,
 } from '@cubejs-backend/api-gateway';
 import { BaseDriver, RedisPoolOptions, CacheAndQueryDriverType } from '@cubejs-backend/query-orchestrator';
-import { BaseQuery } from '@cubejs-backend/schema-compiler';
+import { BaseQuery } from 'cubejs-schema-compiler';
 import type { SchemaFileRepository } from './FileRepository';
 
 export interface QueueOptions {
