@@ -34,6 +34,9 @@ export class HanaQuery extends BaseQuery {
    * using forSelect dimensions for grouping
    */
   groupByClause() {
+    if (this.ungrouped) {
+      return '';
+    }
     const dimensionsForSelect = this.dimensionsForSelect();
     const dimensionColumns = R.flatten(
       dimensionsForSelect.map(s => s.selectColumns() && s.dimensionSql())
